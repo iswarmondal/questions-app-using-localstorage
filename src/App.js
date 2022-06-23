@@ -13,9 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route index element={<Questions />} />
-          <Route to='edit'>
-            <Route to="/:id" element={<EditQuestion />} />
-          </Route>
+          <Route path="/edit" element={<EditQuestion />} />
         </Routes>
       </BrowserRouter>
     </main>
