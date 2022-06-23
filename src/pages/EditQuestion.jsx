@@ -1,8 +1,21 @@
 import React from 'react'
+import { QuestionsContext } from '../utils/QuestionsContext';
+import { useParams } from 'react-router-dom'
 
 function EditQuestion() {
+
+    const { id } = useParams();
+
     const [question, setQuestion] = React.useState('')
-    const [options, setOptions] = React.useState([{ "option": "" }, { "option": "" }])
+    const [options, setOptions] = React.useState([])
+
+    const [questionsData, , , handleEdit] = React.useContext(QuestionsContext);
+
+    React.useEffect(() => {
+        setOptions(questionsData[id].options);
+        setQuestion(questionsData[id].question);
+    }, [])
+
 
     const handleAddOption = (e) => {
         e.preventDefault()
@@ -20,8 +33,15 @@ function EditQuestion() {
         const list = [...options];
         list[index][name] = value;
         setOptions(list);
-        console.log(options);
     }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setQuestion(document.getElementById("title").value);
+        handleEdit(id, { question, options });
+    }
+
+    console.log(questionsData);
 
     return (
         <>
@@ -29,7 +49,7 @@ function EditQuestion() {
                 <h2 className='font-semibold text-xl select-none'>Edit Question</h2>
                 <div className='flex'>
                     <button className=' mr-5 font-medium text-base hover:cursor-pointer hover:underline'>Cancel</button>
-                    <button className='py-2 px-5 rounded bg-slate-600 text-white'>Update</button>
+                    <button className='py-2 px-5 rounded bg-slate-600 text-white' onClick={handleSubmit}>Update</button>
                 </div>
             </div>
             <hr />
@@ -37,7 +57,13 @@ function EditQuestion() {
                 <form className='w-[70vw] flex flex-col items-center'>
                     <div className='w-full mt-[5vh]'>
                         <label htmlFor="title" className='text-2xl font-semibold'>Question Title</label>
-                        <input type="text" id="title" className="w-full border-4 border-slate-500 p-2" onChange={(e) => { setQuestion(e.target.value) }} />
+                        <input
+                            type="text"
+                            id="title"
+                            className="w-full border-4 border-slate-500 p-2"
+                            onChange={(e) => { setQuestion(e.target.value) }}
+                            value={question}
+                        />
                     </div>
                     <div className='w-full mt-[25vh]'>
                         <label htmlFor="options" className='text-xl font-semibold'>Options</label>
