@@ -7,19 +7,14 @@ export const QuestionsProvider = ({ children }) => {
 
     // get the data from localstorage
     React.useEffect(() => {
-        const data = localStorage.getItem('questionData');
-        console.log(data);
-        if (typeof data === 'object') {
-            setQuestionsData([data]);
-        } else {
-            setQuestionsData([]);
-        }
+        const data = JSON.parse(localStorage.getItem('questionData')) || [];
+        setQuestionsData(data);
     }, [])
 
     // save the data to localstorage
     const handleAddition = (payload) => {
         console.log(payload);
-        localStorage.setItem("questionData", payload);
+        localStorage.setItem("questionData", JSON.stringify(payload));
         setQuestionsData(payload)
     }
 
@@ -28,6 +23,7 @@ export const QuestionsProvider = ({ children }) => {
         const list = [...questionsData];
         list.splice(index, 1);
         setQuestionsData(list);
+        localStorage.setItem("questionData", JSON.stringify(list));
     }
 
     // edit the data from localstorage

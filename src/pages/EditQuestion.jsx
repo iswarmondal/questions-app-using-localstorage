@@ -1,6 +1,9 @@
 import React from 'react'
 import { QuestionsContext } from '../utils/QuestionsContext';
-import { useParams } from 'react-router-dom'
+import {
+    useParams,
+    useNavigate
+} from 'react-router-dom'
 
 function EditQuestion() {
 
@@ -10,6 +13,8 @@ function EditQuestion() {
     const [options, setOptions] = React.useState([])
 
     const [questionsData, , , handleEdit] = React.useContext(QuestionsContext);
+
+    let navigate = useNavigate();
 
     React.useEffect(() => {
         setOptions(questionsData[id].options);
@@ -39,17 +44,32 @@ function EditQuestion() {
         e.preventDefault();
         setQuestion(document.getElementById("title").value);
         handleEdit(id, { question, options });
+        navigate('/');
     }
 
-    console.log(questionsData);
+    const handleCancel = e => {
+        e.preventDefault();
+        navigate('/');
+    }
 
     return (
         <>
             <div className='w-full h-14 border flex items-center justify-around'>
                 <h2 className='font-semibold text-xl select-none'>Edit Question</h2>
                 <div className='flex'>
-                    <button className=' mr-5 font-medium text-base hover:cursor-pointer hover:underline'>Cancel</button>
-                    <button className='py-2 px-5 rounded bg-slate-600 text-white' onClick={handleSubmit}>Update</button>
+                    <button
+                        className=' mr-5 font-medium text-base hover:cursor-pointer hover:underline'
+                        onClick={(e) => { handleCancel(e) }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className='py-2 px-5 rounded bg-slate-600 text-white disabled:opacity-50 disabled:hover:bg-slate-200'
+                        onClick={handleSubmit}
+                        disabled={question === '' || options[0].length < 1}
+                    >
+                        Update
+                    </button>
                 </div>
             </div>
             <hr />
@@ -63,6 +83,7 @@ function EditQuestion() {
                             className="w-full border-4 border-slate-500 p-2"
                             onChange={(e) => { setQuestion(e.target.value) }}
                             value={question}
+                            required
                         />
                     </div>
                     <div className='w-full mt-[25vh]'>
@@ -78,6 +99,7 @@ function EditQuestion() {
                                         value={opt.option}
                                         name='option'
                                         onChange={(e) => { handleChange(e, index) }}
+                                        required
                                     />
                                     {
                                         options.length > 1
@@ -90,7 +112,7 @@ function EditQuestion() {
                     </div>
                     {options.length < 6 && (
                         <button className='w-full mt-[4vh] py-2 px-5 rounded text-blue-500' onClick={handleAddOption}>
-                            + Add Option
+                            + Add Option {options.length + 1}
                         </button>
                     )}
                 </form>
